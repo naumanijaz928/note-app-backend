@@ -7,10 +7,7 @@ import mongoose from "mongoose";
 export const getNotes: RequestHandler = async (req, res, next) => {
   try {
     const notes = await NoteModel.find().exec();
-    res.status(200).json({
-      message: "ok",
-      notes,
-    });
+    res.status(200).json(notes);
   } catch (error) {
     next(error);
   }
@@ -26,10 +23,7 @@ export const getNote: RequestHandler = async (req, res, next) => {
     if (!note) {
       throw createHttpError(404, "Note not found");
     }
-    res.status(200).json({
-      message: "ok",
-      note,
-    });
+    res.status(200).json(note);
   } catch (error) {
     next(error);
   }
@@ -96,10 +90,7 @@ export const updateNote: RequestHandler<
     note.title = newTitle;
     note.text = newText;
     const updatedNote = await note.save();
-    res.status(200).json({
-      message: "ok",
-      note: updatedNote,
-    });
+    res.status(200).json(updatedNote);
   } catch (error) {
     next(error);
   }

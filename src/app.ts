@@ -8,7 +8,7 @@ dotenv.config();
 
 const app = express();
 const allowedOrigins: Array<string> = [
-  "http://localhost:3001",
+  "http://localhost:3000",
   "http://example2.com",
 ];
 
