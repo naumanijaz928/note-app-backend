@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
 import notesRoutes from "./routes/notes";
+import userRoutes from "./routes/users";
 import morgan from "morgan";
 import createHttpError, { isHttpError } from "http-errors";
 dotenv.config();
@@ -18,6 +19,7 @@ const options: cors.CorsOptions = {
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(cors(options));
+app.use("/api/users", userRoutes);
 app.use("/api/notes", notesRoutes);
 app.use((req, res, next) => {
   next(createHttpError(404, "Endpoint not found"));
