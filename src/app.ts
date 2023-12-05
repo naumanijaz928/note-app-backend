@@ -5,11 +5,15 @@ import notesRoutes from "./routes/notes";
 import userRoutes from "./routes/users";
 import morgan from "morgan";
 import createHttpError, { isHttpError } from "http-errors";
+import session from "express-session";
+import MongoStore = require("connect-mongo");
 dotenv.config();
+import env from "./util/validateEnv";
 
 const app = express();
 const allowedOrigins: Array<string> = [
   "http://localhost:3000",
+  "http://localhost:3001",
   "http://example2.com",
 ];
 
@@ -19,6 +23,21 @@ const options: cors.CorsOptions = {
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(cors(options));
+
+app.use(
+  session({
+    secret: env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: 60 * 60 * 1000,
+    },
+    rolling: true,
+    store: MongoStore.create({
+      mongoUrl: env.DB_URL,
+    }),
+  })
+);
 app.use("/api/users", userRoutes);
 app.use("/api/notes", notesRoutes);
 app.use((req, res, next) => {
