@@ -1,4 +1,5 @@
 import dotenv from "dotenv";
+dotenv.config();
 import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
 import notesRoutes from "./routes/notes";
@@ -6,9 +7,10 @@ import userRoutes from "./routes/users";
 import morgan from "morgan";
 import createHttpError, { isHttpError } from "http-errors";
 import session from "express-session";
-import MongoStore = require("connect-mongo");
-dotenv.config();
+import MongoStore from "connect-mongo";
+
 import env from "./util/validateEnv";
+import { requiresAuth } from "./middleware/auth";
 
 const app = express();
 const allowedOrigins: Array<string> = [
@@ -39,7 +41,7 @@ app.use(
   })
 );
 app.use("/api/users", userRoutes);
-app.use("/api/notes", notesRoutes);
+app.use("/api/notes", requiresAuth, notesRoutes);
 app.use((req, res, next) => {
   next(createHttpError(404, "Endpoint not found"));
 });
